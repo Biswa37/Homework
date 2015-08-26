@@ -1,0 +1,179 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      5172,        169]
+NotebookOptionsPosition[      4696,        148]
+NotebookOutlinePosition[      5048,        164]
+CellTagsIndexPosition[      5005,        161]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{"Clear", "[", 
+  RowBox[{"x", ",", "y", ",", "z", ",", "r", ",", "\[Theta]", ",", "\[Phi]"}],
+   "]"}], "\[IndentingNewLine]", 
+ RowBox[{"x", " ", ":=", " ", 
+  RowBox[{"r", " ", 
+   RowBox[{"Sin", "[", "\[Theta]", "]"}], 
+   RowBox[{"Cos", "[", "\[Phi]", "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"y", " ", ":=", " ", 
+  RowBox[{"r", " ", 
+   RowBox[{"Sin", "[", "\[Theta]", "]"}], 
+   RowBox[{"Sin", "[", "\[Phi]", "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{"z", " ", ":=", " ", 
+  RowBox[{"r", " ", 
+   RowBox[{"Cos", "[", "\[Theta]", "]"}]}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["\[PartialD]", "r"], "x"}], " ", ")"}], "^", "2"}], "+", 
+   RowBox[{
+    RowBox[{"(", " ", 
+     RowBox[{
+      SubscriptBox["\[PartialD]", "r"], "y"}], ")"}], "^", "2"}], " ", "+", 
+   " ", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["\[PartialD]", "r"], "z"}], ")"}], "^", "2"}]}], "  ", "//",
+   "Simplify"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["\[PartialD]", "\[Theta]"], "x"}], " ", ")"}], "^", "2"}], 
+   "+", 
+   RowBox[{
+    RowBox[{"(", " ", 
+     RowBox[{
+      SubscriptBox["\[PartialD]", "\[Theta]"], "y"}], ")"}], "^", "2"}], " ", 
+   "+", " ", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["\[PartialD]", "\[Theta]"], "z"}], ")"}], "^", "2"}]}], 
+  " ", "//", "Simplify"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["\[PartialD]", "\[Phi]"], "x"}], " ", ")"}], "^", "2"}], 
+   "+", 
+   RowBox[{
+    RowBox[{"(", " ", 
+     RowBox[{
+      SubscriptBox["\[PartialD]", "\[Phi]"], "y"}], ")"}], "^", "2"}], " ", 
+   "+", " ", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      SubscriptBox["\[PartialD]", "\[Phi]"], "z"}], ")"}], "^", "2"}]}], " ", 
+  "//", "Simplify"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.649591861854368*^9, 3.649592026766185*^9}, {
+  3.649592066370432*^9, 3.649592133394229*^9}, {3.649592231730771*^9, 
+  3.649592300925886*^9}, {3.649592409790379*^9, 3.649592420485168*^9}}],
+
+Cell[BoxData["1"], "Output",
+ CellChangeTimes->{
+  3.649591938975582*^9, {3.64959200302048*^9, 3.64959202779389*^9}, {
+   3.649592083882656*^9, 3.649592098727614*^9}, 3.649592134107539*^9, {
+   3.649592262817473*^9, 3.649592301738365*^9}}],
+
+Cell[BoxData[
+ SuperscriptBox["r", "2"]], "Output",
+ CellChangeTimes->{
+  3.649591938975582*^9, {3.64959200302048*^9, 3.64959202779389*^9}, {
+   3.649592083882656*^9, 3.649592098727614*^9}, 3.649592134107539*^9, {
+   3.649592262817473*^9, 3.6495923017493277`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  SuperscriptBox["r", "2"], " ", 
+  SuperscriptBox[
+   RowBox[{"Sin", "[", "\[Theta]", "]"}], "2"]}]], "Output",
+ CellChangeTimes->{
+  3.649591938975582*^9, {3.64959200302048*^9, 3.64959202779389*^9}, {
+   3.649592083882656*^9, 3.649592098727614*^9}, 3.649592134107539*^9, {
+   3.649592262817473*^9, 3.64959230175686*^9}}]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{"Clear", "[", 
+  RowBox[{"x", ",", "y", ",", "z", ",", "r", ",", "\[Theta]", ",", "\[Phi]"}],
+   "]"}], "\[IndentingNewLine]", 
+ RowBox[{"r", ":=", 
+  RowBox[{"Sqrt", "[", 
+   RowBox[{
+    RowBox[{"x", "^", "2"}], "+", 
+    RowBox[{"y", "^", "2"}], "+", 
+    RowBox[{"z", "^", "2"}]}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"\[Theta]", ":=", "\[IndentingNewLine]", 
+  RowBox[{"\[Phi]", " ", ":=", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["\[PartialD]", "x"], "x"}], " ", ")"}], "^", "2"}], "+", 
+    RowBox[{
+     RowBox[{"(", " ", 
+      RowBox[{
+       SubscriptBox["\[PartialD]", "y"], "y"}], ")"}], "^", "2"}], " ", "+", 
+    " ", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       SubscriptBox["\[PartialD]", "z"], "z"}], ")"}], "^", 
+     "2"}]}]}]}]}], "Input",
+ CellChangeTimes->{{3.649592396032178*^9, 3.649592483478942*^9}}],
+
+Cell[BoxData[" "], "Input",
+ CellChangeTimes->{{3.6495923808284187`*^9, 3.649592386506892*^9}, 
+   3.649592432697062*^9}]
+},
+WindowSize->{808, 840},
+WindowMargins->{{4, Automatic}, {Automatic, 4}},
+FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (June 27, \
+2014)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 2187, 67, 152, "Input"],
+Cell[2770, 91, 239, 4, 28, "Output"],
+Cell[3012, 97, 264, 5, 32, "Output"],
+Cell[3279, 104, 346, 8, 66, "Output"]
+}, Open  ]],
+Cell[3640, 115, 928, 27, 101, "Input"],
+Cell[4571, 144, 121, 2, 28, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)
+
