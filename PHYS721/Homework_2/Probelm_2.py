@@ -33,19 +33,19 @@ for line in lines:
 
 plt.subplot(221)
 plt.hist(mass1, bins, histtype=u'stepfilled', alpha=0.5)
-plt.xlabel(r'Mass (GeV)')
+plt.xlabel(r'Mass (GeV/$c^2$)')
 plt.ylabel(r'Counts (#)')
 plt.title(r'Mass found from four vector 1')
 
 plt.subplot(222)
 plt.hist(mass2, bins, histtype=u'stepfilled',facecolor='red' , alpha=0.5)
-plt.xlabel(r'Mass (GeV)')
+plt.xlabel(r'Mass (GeV/$c^2$)')
 plt.ylabel(r'Counts (#)')
 plt.title(r'Mass found from four vector 2')
 
 plt.subplot(212)
 plt.hist(mass_sum, 4*bins, histtype=u'stepfilled',facecolor='green' , alpha=0.5)
-plt.xlabel(r'Mass (GeV)')
+plt.xlabel(r'Mass (GeV/$c^2$)')
 plt.ylabel(r'Counts (#)')
 plt.title(r'Mass found from the sum of four vectors')
 #plt.show()
