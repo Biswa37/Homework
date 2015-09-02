@@ -1,3 +1,8 @@
+#include "TTree.h"
+#include "TFile.h"
+#include "TH1D.h"
+#include "TCanvas.h"
+
 void problem_1(){
 	//Declare variable for energy
 	Float_t energy;
