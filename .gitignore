@@ -8,3 +8,11 @@
 *.d
 
 *.so
+
+*.o
+
+PHYS721/Homework_3/Problem_1
+
+*.root
+
+*.root
