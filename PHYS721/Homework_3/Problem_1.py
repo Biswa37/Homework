@@ -6,6 +6,7 @@ from ROOT import TLorentzVector
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 
+fig = plt.figure(num=None, figsize=(10, 10), dpi=200, facecolor='w', edgecolor='k')
 lines = [line.rstrip('\n') for line in open('data1')]
 mass_sum = []
 vec1 = TLorentzVector()
@@ -24,7 +25,7 @@ ydata = hist
 
 def BW_R(Energy,Mass,Gamma):
     g = ((Mass**2.0 + Gamma**2.0)*Mass**2.0)**(1.0/2.0)
-    k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma * g)/(3.14159 * (Mass**(2.0)+g)**(1.0/2.0))
+    k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
     return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma*Mass)**2.0))
 
 
@@ -36,7 +37,6 @@ plt.xlabel(r'Mass (GeV)')
 plt.ylabel(r'Counts (#)')
 plt.title(r'$\mathrm{Mass\ Histogram: Mass=%.5f,}\ \Gamma=%.5f$' %(popt[0], popt[1]))
 
-#plt.ion()
-plt.show()
+#plt.show()
 
-#fig.savefig('Problem_2.pdf')
+fig.savefig('Problem_1.pdf')
