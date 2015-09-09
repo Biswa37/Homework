@@ -16,8 +16,8 @@ int main(int argc, char const *argv[]) {
 	Float_t E1,Px1,Py1,Pz1,E2,Px2,Py2,Pz2;
 	Double_t mass = 0;
 
-	TH1D *m12 = new TH1D("m12","m12",100,0.9,1.2);
-	TF1 *myBW = new TF1("myBW","TMath::BreitWigner(x,[0],[1])", 0, 2);
+	TH1D *m12 = new TH1D("m12","m12",60,0.99,1.08);
+	TF1 *myBW = new TF1("myBW","TMath::BreitWigner(x,[0],[1])", 1.01, 1.03);
 
 	myBW->SetParName(0,"Mass");
 	myBW->SetParName(1,"#Gamma");
@@ -47,7 +47,8 @@ int main(int argc, char const *argv[]) {
 
 		m12->Fill(mass);
 	}
-	//m12->Fit("TMath::BreitWigner","","",0,2);
+	myBW->SetParameters(0,1.02,0.05);
+	myBW->SetParLimits(0,1.01,1.03);
 	m12->Fit("myBW","","",0,2);
 	m12->GetXaxis()->SetTitle("Mass (GeV)");
 	gStyle->SetOptFit(1111);

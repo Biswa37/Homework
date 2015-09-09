@@ -11,7 +11,7 @@ lines = [line.rstrip('\n') for line in open('data1')]
 mass_sum = []
 vec1 = TLorentzVector()
 vec2 = TLorentzVector()
-num_bins = 100
+num_bins = 60
 
 for line in lines:
     a = np.array(np.loadtxt(StringIO(line)))
@@ -23,19 +23,18 @@ hist, bin_edges = numpy.histogram(mass_sum,bins=num_bins)
 xdata = bin_edges[1:]
 ydata = hist
 
-def BW_R(Energy,Mass,Gamma):
+def myBW(Energy,Mass,Gamma):
     g = ((Mass**2.0 + Gamma**2.0)*Mass**2.0)**(1.0/2.0)
     k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
     return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma*Mass)**2.0))
 
-
 n, bins, patches = plt.hist(mass_sum, num_bins, histtype=u'stepfilled',facecolor='green' , alpha=0.5)
 
-popt, pcov = curve_fit(BW_R, xdata, ydata)
-plt.plot(xdata,BW_R(xdata,popt[0],popt[1]),'b-')
+popt, pcov = curve_fit(myBW, xdata, ydata)
+plt.plot(xdata,myBW(xdata,popt[0],popt[1]),'b-')
 plt.xlabel(r'Mass (GeV)')
 plt.ylabel(r'Counts (#)')
-plt.title(r'$\mathrm{Mass\ Histogram: Mass=%.5f,}\ \Gamma=%.5f$' %(popt[0], popt[1]))
+plt.title(r'$\mathrm{Mass\ Histogram:\ Mass=%.4f \ GeV,}\ \Gamma=%.4f$' %(popt[0], popt[1]))
 
 #plt.show()
 
