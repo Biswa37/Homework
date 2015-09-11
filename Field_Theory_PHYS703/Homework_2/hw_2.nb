@@ -1,0 +1,125 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      3374,        115]
+NotebookOptionsPosition[      3015,         97]
+NotebookOutlinePosition[      3367,        113]
+CellTagsIndexPosition[      3324,        110]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{"Rij", " ", ":=", 
+  RowBox[{"{", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"Cos", "[", "\[CapitalTheta]", "]"}], ",", 
+      RowBox[{"Sin", "[", "\[CapitalTheta]", "]"}], ",", "0"}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"-", 
+       RowBox[{"Sin", "[", "\[CapitalTheta]", "]"}]}], ",", 
+      RowBox[{"Cos", "[", "\[CapitalTheta]", "]"}], ",", "0"}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"0", ",", "0", ",", "1"}], "}"}]}], 
+   "}"}]}], "\[IndentingNewLine]", 
+ RowBox[{"Aij", " ", ":=", " ", 
+  RowBox[{"{", " ", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"0", ",", " ", "v3", ",", 
+      RowBox[{"-", "v2"}]}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"-", "v3"}], ",", "0", ",", "v1"}], "}"}], ",", 
+    RowBox[{"{", 
+     RowBox[{"v2", ",", 
+      RowBox[{"-", "v1"}], ",", "0"}], "}"}]}], "}"}]}]}], "Input",
+ CellChangeTimes->{{3.650888195709268*^9, 3.650888335825809*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Rij", ".", "Aij", ".", 
+   RowBox[{"Transpose", "[", "Rij", "]"}]}], "//", "Simplify"}]], "Input",
+ CellChangeTimes->{{3.650888356275691*^9, 3.65088836121202*^9}, {
+  3.6508884773731956`*^9, 3.650888506046031*^9}, {3.650888592057227*^9, 
+  3.6508885932695208`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"0", ",", "v3", ",", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", "v2"}], " ", 
+       RowBox[{"Cos", "[", "\[CapitalTheta]", "]"}]}], "+", 
+      RowBox[{"v1", " ", 
+       RowBox[{"Sin", "[", "\[CapitalTheta]", "]"}]}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "v3"}], ",", "0", ",", 
+     RowBox[{
+      RowBox[{"v1", " ", 
+       RowBox[{"Cos", "[", "\[CapitalTheta]", "]"}]}], "+", 
+      RowBox[{"v2", " ", 
+       RowBox[{"Sin", "[", "\[CapitalTheta]", "]"}]}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"v2", " ", 
+       RowBox[{"Cos", "[", "\[CapitalTheta]", "]"}]}], "-", 
+      RowBox[{"v1", " ", 
+       RowBox[{"Sin", "[", "\[CapitalTheta]", "]"}]}]}], ",", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", "v1"}], " ", 
+       RowBox[{"Cos", "[", "\[CapitalTheta]", "]"}]}], "-", 
+      RowBox[{"v2", " ", 
+       RowBox[{"Sin", "[", "\[CapitalTheta]", "]"}]}]}], ",", "0"}], "}"}]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.650888490357614*^9, 3.650888506555749*^9}, 
+   3.650888593698761*^9}]
+}, Open  ]]
+},
+WindowSize->{808, 840},
+WindowMargins->{{4, Automatic}, {Automatic, 4}},
+FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (June 27, \
+2014)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 969, 28, 46, "Input"],
+Cell[CellGroupData[{
+Cell[1552, 52, 300, 6, 28, "Input"],
+Cell[1855, 60, 1144, 34, 104, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
