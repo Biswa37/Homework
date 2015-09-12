@@ -24,11 +24,13 @@ int main(int argc, char const *argv[]) {
 	myBW->SetParName(0,"Mass_R");
 	myBW->SetParName(1,"#Gamma_R");
 	myBW->SetLineStyle(2);
+	myBW->SetLineWidth(4);
 	myBW->SetLineColor(kBlue);
 
 	BW_nonR->SetParName(0,"Mass_nonR");
 	BW_nonR->SetParName(1,"#Gamma_nonR");
 	BW_nonR->SetLineStyle(4);
+	BW_nonR->SetLineWidth(4);
 	BW_nonR->SetLineColor(kRed);
 
 	TFile *inputFile = new TFile("data.root");
@@ -46,9 +48,9 @@ int main(int argc, char const *argv[]) {
 	TLorentzVector vec1(0.0,0.0,0.0,0.0);
 	TLorentzVector vec2(0.0,0.0,0.0,0.0);
 
-	int count = data_tree->GetEntries();
+	int counts = data_tree->GetEntries();
 
-	for (int i = 0; i < count; i++) {	
+	for (int i = 0; i < counts; i++) {
 		data_tree->GetEntry(i);
 		vec1.SetPxPyPzE(Px1,Py1,Pz1,E1);
 		vec2.SetPxPyPzE(Px2,Py2,Pz2,E2);
@@ -66,9 +68,12 @@ int main(int argc, char const *argv[]) {
 	m12->Fit("myBW","+","sames",0,2);
 
 	m12->GetXaxis()->SetTitle("Mass (GeV)");
-	gStyle->SetOptFit(0);
+	gStyle->SetOptFit(0011);
 
-	cout << m12->GetListOfFunctions()->FindObject("stats") << endl;
+	TPaveStats *st = ((TPaveStats*)(m12->GetListOfFunctions()->FindObject("stats")));
+	st->SetFitFormat("1.8g");
+	st->SetX1NDC(0.64); st->SetX2NDC(0.99);
+	st->SetY1NDC(0.4); st->SetY2NDC(0.6);
 
 	myFile->cd();
 	myFile->Write();
