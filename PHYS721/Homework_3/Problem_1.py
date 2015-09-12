@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import numpy 
+import numpy
 import numpy as np
 from StringIO import StringIO
 from ROOT import TLorentzVector
@@ -18,7 +18,7 @@ for line in lines:
     vec1.SetPxPyPzE(a[1],a[2],a[3],a[0])
     vec2.SetPxPyPzE(a[5],a[6],a[7],a[4])
     mass_sum.append((vec1+vec2).M())
-    
+
 hist, bin_edges = numpy.histogram(mass_sum,bins=num_bins)
 xdata = bin_edges[1:]
 ydata = hist
@@ -35,7 +35,7 @@ plt.plot(xdata,myBW(xdata,popt[0],popt[1]),'b-')
 plt.xlabel(r'Mass (GeV)')
 plt.ylabel(r'Counts (#)')
 plt.title(r'$\mathrm{Mass\ Histogram:\ Mass=%.4f \ GeV,}\ \Gamma=%.4f$' %(popt[0], popt[1]))
+#plt.ion()
+plt.show()
 
-#plt.show()
-
-fig.savefig('Problem_1.pdf')
+#fig.savefig('Problem_1.pdf')
