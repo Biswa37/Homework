@@ -46,18 +46,22 @@ def Gamma_P(Energy):
 hist, bin_edges = numpy.histogram(mass_sum,bins=num_bins)
 xdata = 0.5*(bin_edges[1:]+bin_edges[:-1])
 ydata = hist
-n, bins, patches = plt.hist(mass_sum, num_bins, histtype=u'stepfilled',facecolor='green' , alpha=0.5)
+n, bins, patches = plt.hist(mass_sum, num_bins, 
+    histtype=u'stepfilled',facecolor='green' , alpha=0.5,normed=True)
 x0 = numpy.array([1.02, 0.0043])
     
 popt_1, pcov_1 = curve_fit(myBW, xdata, ydata, p0=x0)
-plt.plot(xdata,myBW(xdata,popt_1[0],popt_1[1]),'g-',lw=4,label=r'$\mathrm{Relatavistic \ BW:\ Mass=%.7f \ GeV,}\ \Gamma=%.7f$' %(popt_1[0], popt_1[1]))
+plt.plot(xdata,myBW(xdata,popt_1[0],popt_1[1]),'g-',lw=4,
+    label=r'$\mathrm{Relatavistic \ BW:\ Mass=%.7f \ GeV,}\ \Gamma=%.7f$' %(popt_1[0], popt_1[1]))
     
 popt_2, pcov_2 = curve_fit(BW_NonR, xdata, ydata, p0=x0)
-plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1]),'r--',lw=2,label=r'$\mathrm{Non-Rel. \ BW:\ Mass=%.7f \ GeV,}\ \Gamma=%.7f$' %(popt_2[0], popt_2[1]))
+plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1]),'r--',lw=2,
+    label=r'$\mathrm{Non-Rel. \ BW:\ Mass=%.7f \ GeV,}\ \Gamma=%.7f$' %(popt_2[0], popt_2[1]))
 
 #This part too
 popt_3, pcov_3 = curve_fit(myBW_2, xdata, ydata, p0=x0[0])
-plt.plot(xdata,myBW_2(xdata,popt_3[0]),'b-.',lw=2,label=r'$\mathrm{BW:\ Mass=%.7f \ GeV,}\ \Gamma=%.7f$' %(popt_3[0], Gamma_P(popt_3[0])))
+plt.plot(xdata,myBW_2(xdata,popt_3[0]),'b-.',lw=2,
+    label=r'$\mathrm{BW:\ Mass=%.7f \ GeV,}\ \Gamma=%.7f$' %(popt_3[0], Gamma_P(popt_3[0])))
     
 plt.xlabel(r'Mass (GeV)')
 plt.ylabel(r'Counts (#)')
