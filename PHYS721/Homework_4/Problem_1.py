@@ -6,7 +6,7 @@ from ROOT import TLorentzVector
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 
-fig = plt.figure(num=None, figsize=(10, 10), dpi=200, facecolor='w', edgecolor='k')
+fig = plt.figure(num=None, figsize=(15, 15), dpi=200, facecolor='w', edgecolor='k')
 lines = [line.rstrip('\n') for line in open('data1')]
 mass_sum = []
 vec1 = TLorentzVector()
@@ -27,14 +27,20 @@ def myBW(Energy,Mass,Gamma):
 def BW_NonR(Energy,Mass,Gamma):
     return (((Gamma/(2.0*np.pi)))/((Energy-Mass)**2.0 + (Gamma/2.0)**2.0))
 
-#This is not right I still need to fix this
-def Gamma_2(Energy):
-    return popt_2[1]
-    
+"""
+So I think the idea is that you have gamma(p) = avg(gamma)*(p/p0)**3.0
+To get P we can use the energy E^2 = p^2 + m^2 or p = sqrt(E^2-m^2)
+m = avg(mass)
+p0 = mass???
+"""
+#This is not right I still need to fix this  
 def myBW_2(Energy,Mass):
-    g = ((Mass**2.0 + Gamma_2(Energy)**2.0)*Mass**2.0)**(1.0/2.0)
-    k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma_2(Energy) * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
-    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma_2(Energy)*Mass)**2.0))
+    g = ((Mass**2.0 + Gamma_P(Energy)**2.0)*Mass**2.0)**(1.0/2.0)
+    k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma_P(Energy) * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
+    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma_P(Energy)*Mass)**2.0))
+
+def Gamma_P(Energy):
+    return 0.5*(popt_1[1]+popt_2[1])#*(p/p0)^3.0
 #Up to here
 
 hist, bin_edges = numpy.histogram(mass_sum,bins=num_bins)
@@ -51,7 +57,7 @@ plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1]),'r--',lw=2,label=r'$\mathrm{No
 
 #This part too
 popt_3, pcov_3 = curve_fit(myBW_2, xdata, ydata, p0=x0[0])
-plt.plot(xdata,myBW_2(xdata,popt_3[0]),'b-.',lw=2,label=r'$\mathrm{BW:\ Mass=%.7f \ GeV,}\ \Gamma=%.7f$' %(popt_3[0], popt_3[0]))
+plt.plot(xdata,myBW_2(xdata,popt_3[0]),'b-.',lw=2,label=r'$\mathrm{BW:\ Mass=%.7f \ GeV,}\ \Gamma=%.7f$' %(popt_3[0], Gamma_P(popt_3[0])))
     
 plt.xlabel(r'Mass (GeV)')
 plt.ylabel(r'Counts (#)')
