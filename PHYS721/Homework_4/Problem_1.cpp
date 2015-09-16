@@ -7,77 +7,68 @@
 #include "TStyle.h"
 #include "TMath.h"
 #include <iostream>
-#include "TPaveStats.h"
 
 using namespace std;
 
+/* functions from python code
+def myBW_2(Energy,Mass,Gamma_0):
+    g = ((Mass**2.0 + Gamma_P(Energy,Gamma_0)**2.0)*Mass**2.0)**(1.0/2.0)
+    k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma_P(Energy,Gamma_0) * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
+    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma_P(Energy,Gamma_0)*Mass)**2.0))
+
+def Gamma_P(Energy,Gamma_0):
+    m_k = 0.493677
+    m_phi = 1.019461
+    p = ((Energy**2.0/4.0)-m_k**2.0)**(1.0/2.0)
+    p0 = ((m_phi**2.0/4.0)-m_k**2.0)**(1.0/2.0)
+    return Gamma_0*(p/p0)**3.0
+
+
+double gamma_p(double E, double Gamma_0){
+	double m_k = 0.493677;
+	double m_phi = 1.019461;
+	double p = sqrt(((E*E)/4.0)-(m_k*m_k));
+	double p0 = sqrt(((m_phi*m_phi)/4.0)-(m_k*m_k));
+	return Gamma_0*(p/p0)*(p/p0)*(p/p0);
+}
+
+double bw_gamma(Double_t E , double mass, double gamma_0){
+	double bw = gamma_p(E,gamma_0)/((E-mass)*(E-mass) + gamma_p(E,gamma_0)*gamma_p(E,gamma_0)/4);
+	return bw/(2*TMath::Pi());
+	return bw/(2*TMath::Pi());
+}
+*/
 int main(int argc, char const *argv[]) {
-	TFile *myFile = new TFile("output.root","RECREATE");
+	TCanvas *c1 = new TCanvas("c1","#phi -> k^+ k^-",800,800);
 
-	Float_t E1,Px1,Py1,Pz1,E2,Px2,Py2,Pz2;
-	Double_t mass = 0;
+	TF1 *myBW = new TF1("myBW","TMath::BreitWigner(x,[0],[1])", 0.9, 1.1);
+	TF1 *BW_nonR = new TF1("BW_nonR","((([1]/(2.0*3.14159)))/((x-[0])**2.0 + ([1]/2.0)**2.0))", 0.9, 1.1);
+	//TF1 *BW_gamma = new TF1("BW_gamma","([1]*TMath::Power((sqrt(((x*x)/4.0)-(0.493677*0.493677))/sqrt(((1.019461*1.019461)/4.0)-(0.493677*0.493677))),3))/((x-[0])*(x-[0]) + gamma_p(x,[1])*gamma_p(x,[1])/4/(2*TMath::Pi())", 0, 2);
 
-	TH1D *m12 = new TH1D("m12","m12",60,0.99,1.08);
-	TF1 *myBW = new TF1("myBW","TMath::BreitWigner(x,[0],[1])", 1, 2);
-	TF1 *BW_nonR = new TF1("BW_nonR","((([1]/(2.0*3.14159)))/((x-[0])**2.0 + ([1]/2.0)**2.0))", 1.01, 1.03);
-
-	myBW->SetParName(0,"Mass_R");
-	myBW->SetParName(1,"#Gamma_R");
-	myBW->SetLineStyle(2);
+	myBW->SetLineStyle(1);
 	myBW->SetLineWidth(4);
 	myBW->SetLineColor(kBlue);
+	myBW->SetParameter(0,1.019461);
+	myBW->SetParameter(1,0.00426);
+	myBW->SetTitle("#phi #rightarrow k^{+} k^{-}");
 
-	BW_nonR->SetParName(0,"Mass_nonR");
-	BW_nonR->SetParName(1,"#Gamma_nonR");
-	BW_nonR->SetLineStyle(4);
+	BW_nonR->SetLineStyle(2);
 	BW_nonR->SetLineWidth(4);
 	BW_nonR->SetLineColor(kRed);
+	BW_nonR->SetParameter(0, 1.019461);
+	BW_nonR->SetParameter(1, 0.00426);
 
-	TFile *inputFile = new TFile("data.root");
-	TTree *data_tree = (TTree*)inputFile->Get("data");
+	//BW_gamma->SetLineStyle(6);
+	//BW_gamma->SetLineWidth(4);
+	//BW_gamma->SetLineColor(kBlue);
+	//BW_gamma->SetParameter(0, 1.019461);
+	//BW_gamma->SetParameter(1, 0.00426);
 
-	data_tree->SetBranchAddress("E1", &E1);
-	data_tree->SetBranchAddress("Px1", &Px1);
-	data_tree->SetBranchAddress("Py1", &Py1);
-	data_tree->SetBranchAddress("Pz1", &Pz1);
-	data_tree->SetBranchAddress("E2", &E2);
-	data_tree->SetBranchAddress("Px2", &Px2);
-	data_tree->SetBranchAddress("Py2", &Py2);
-	data_tree->SetBranchAddress("Pz2", &Pz2);
-
-	TLorentzVector vec1(0.0,0.0,0.0,0.0);
-	TLorentzVector vec2(0.0,0.0,0.0,0.0);
-
-	int counts = data_tree->GetEntries();
-
-	for (int i = 0; i < counts; i++) {
-		data_tree->GetEntry(i);
-		vec1.SetPxPyPzE(Px1,Py1,Pz1,E1);
-		vec2.SetPxPyPzE(Px2,Py2,Pz2,E2);
-		mass = (vec1 + vec2).M();
-
-		m12->Fill(mass);
-	}
-	m12->Draw();
-	BW_nonR->SetParameters(0,1.019,0.043);
-	BW_nonR->SetParLimits(0,1.01,1.03);
-	m12->Fit("BW_nonR","+","sames",1,1.08);
-
-	myBW->SetParameters(0,1.019,0.043);
-	myBW->SetParLimits(0,1.01,1.03);
-	m12->Fit("myBW","+","sames",0,2);
-
-	m12->GetXaxis()->SetTitle("Mass (GeV)");
-	gStyle->SetOptFit(0011);
-
-	TPaveStats *st = ((TPaveStats*)(m12->GetListOfFunctions()->FindObject("stats")));
-	st->SetFitFormat("1.8g");
-	st->SetX1NDC(0.64); st->SetX2NDC(0.99);
-	st->SetY1NDC(0.4); st->SetY2NDC(0.6);
-
-	myFile->cd();
-	myFile->Write();
-	myFile->Close();
+	myBW->Draw();
+	BW_nonR->Draw("same");
+	//BW_gamma->Draw();
+	c1->SetTitle("#phi -> k^+ k^-");
+	c1->Print("phi_decay.pdf","pdf");
 
 	return 0;
 }

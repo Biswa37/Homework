@@ -5,9 +5,10 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import UnivariateSpline
 from scipy.integrate import quad
 from scipy.optimize import curve_fit
+import sys
 
 fig = plt.figure(num=None, figsize=(15, 15), dpi=200, facecolor='w', edgecolor='k')
-num_bins = 1000
+num_bins = 10000000
 
 def myBW(Energy,Mass,Gamma):
     g = ((Mass**2.0 + Gamma**2.0)*Mass**2.0)**(1.0/2.0)
@@ -25,7 +26,7 @@ def myBW_2(Energy,Mass,Gamma_0):
 def Gamma_P(Energy,Gamma_0):
     m_k = 0.493677
     m_phi = 1.019461
-    p = ((Energy**2.0/4.0)-m_k**2.0)**(1.0/2.0)
+    p = abs((Energy**2.0/4.0)-m_k**2.0)**(1.0/2.0)
     p0 = ((m_phi**2.0/4.0)-m_k**2.0)**(1.0/2.0)
     return Gamma_0*(p/p0)**3.0
 
@@ -37,19 +38,20 @@ Imporve it by chaning sigma to be dynamic to adapt to changing widths
 def FWHM(x,y):
     temp = []
     max_2 = y.max()/2.0
-    sigma = 2 #this needs to be dynamic so that it only gets two values
+    sigma = 10 #this needs to be dynamic so that it only gets two values
     #YMaxIndex = numpy.where(y == y.max())[0][0]
 
     for value in y:
         if value >= max_2-sigma and value <= max_2+sigma:
             temp.append(numpy.where(y == value)[0][0])
+
     temp = x[temp]
     return temp, (temp[-1] - temp[0])
 
 def normalize(values):
     return values/num_bins
 
-x = np.linspace(0.99, 1.08, num_bins)
+x = np.linspace(0.99, 1.1, num_bins)
 y1 = myBW(x,1.019461,0.00426)
 y2 = BW_NonR(x,1.019461,0.00426)
 y3 = myBW_2(x,1.019461,0.00426)
