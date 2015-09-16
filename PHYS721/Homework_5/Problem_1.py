@@ -3,6 +3,9 @@ import numpy
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import quad
+from StringIO import StringIO
+from ROOT import TLorentzVector
+from scipy.optimize import curve_fit
 
 fig = plt.figure(num=None, figsize=(15, 15), dpi=200, facecolor='w', edgecolor='k')
 num_bins = 10000
@@ -10,6 +13,11 @@ m_k = 0.493677
 m_phi = 1.019461
 mass = 1.019461
 gamma = 0.00426
+
+mass_sum = []
+vec1 = TLorentzVector()
+vec2 = TLorentzVector()
+num_bins = 60
 
 def BW(Energy,Mass,Gamma):
     g = ((Mass**2.0 + Gamma**2.0)*Mass**2.0)**(1.0/2.0)
@@ -31,75 +39,34 @@ def Gamma_P(Energy,Gamma_0):
     return Gamma_0*(p/p0)**3.0
 
 
-"""
-My homemade algorithm for getting FWHM
-Imporve it by changing sigma to be dynamic to adapt to changing widths 
+lines = [line.rstrip('\n') for line in open('data1')]
 
-"""
-def FWHM(x,y):
-    temp = []
-    max_2 = y.max()/2.0
-    sigma = 0.25 #this should be dynamic so that it only gets two values
+for line in lines:
+    a = np.array(np.loadtxt(StringIO(line)))
+    vec1.SetPxPyPzE(a[1],a[2],a[3],a[0])
+    vec2.SetPxPyPzE(a[5],a[6],a[7],a[4])
+    mass_sum.append((vec1+vec2).M())
 
-    for value in y:
-        if value >= max_2-sigma and value <= max_2+sigma:
-            temp.append(numpy.where(y == value)[0][0])
+hist, bin_edges = numpy.histogram(mass_sum,bins=num_bins)
+xdata = bin_edges[1:]
+ydata = hist
 
-    temp = x[temp] #convert bin numbers to x values
-    return temp, (temp[-1] - temp[0])
+n, bins, patches = plt.hist(mass_sum, num_bins, histtype=u'stepfilled',facecolor='green' , alpha=0.5)
 
-def normalize(values):
-    return values
+popt, pcov = curve_fit(BW, xdata, ydata)
+plt.plot(xdata,BW(xdata,popt[0],popt[1]),'b-')
+print popt
 
-x = np.linspace(0.99, 1.1, num_bins)
-y1 = BW(x,mass,gamma)
-y2 = BW_NonR(x,mass,gamma)
-y3 = BW_2(x,mass,gamma)
+popt, pcov = curve_fit(BW_NonR, xdata, ydata)
+plt.plot(xdata,BW_NonR(xdata,popt[0],popt[1]),'r-')
+print popt
 
-temp_1, val_1 = FWHM(x,y1)
-temp_2, val_2 = FWHM(x,y2)
-temp_3, val_3 = FWHM(x,y3)
+popt, pcov = curve_fit(BW_2, xdata, ydata)
+plt.plot(xdata,BW_2(xdata,popt[0],popt[1]),'g-')
+print popt
 
-
-plt.plot(x,y1,'g-',lw=4,
-    label=r'$\mathrm{Relatavistic \ BW:\ Peak=%.7f \ GeV,}\ FWHM=%.7f \ GeV$' %(max(y1), val_1))
-
-plt.plot(x,y2,'r--',lw=4,
-    label=r'$\mathrm{Non-Rel. \ BW:\ Peak=%.7f \ GeV,}\ FWHM=%.7f \ GeV$' %(max(y2), val_2))
-
-
-plt.plot(x,y3,'b-.',lw=6,
-    label=r'$\mathrm{Rel. \ BW \ with \ Mass \ dep. \ \Gamma:\ Peak=%.7f \ GeV,}\ FWHM=%.7f \ GeV$' %(max(y3), val_3))
-
-"""
-#These are visual checks of the FWHM. The more horiontal the line the better accuacy of FWHM.
-plt.plot(
-    [ temp[0] , temp[-1]  ],
-    [ normalize(y1)[numpy.where(x == temp[0])[0][0]], normalize(y1)[numpy.where(x == temp[-1])[0][0]] ],
-    'g', lw=2
-    )
-
-plt.plot(
-    [ temp[0] , temp[-1]  ],
-    [ normalize(y2)[numpy.where(x == temp[0])[0][0]], normalize(y2)[numpy.where(x == temp[-1])[0][0]] ],
-    'r', lw=2
-    )
-
-plt.plot(
-    [ temp[0] , temp[-1]  ],
-    [ normalize(y3)[numpy.where(x == temp[0])[0][0]], normalize(y3)[numpy.where(x == temp[-1])[0][0]] ],
-    'b', lw=2
-    )
-"""
-""" 
-#check normilizations. 
-print quad(BW, 0, 200, args=(mass,gamma))
-print quad(BW_2, 0, 200, args=(mass,gamma))
-print quad(BW_NonR, 0.99, 200, args=(mass,gamma))
-"""
-
-plt.xlabel(r'Mass (GeV)')
-plt.ylabel(r'Counts (#)')
+#plt.xlabel(r'Mass (GeV)')
+#plt.ylabel(r'Counts (#)')
 plt.legend()
 
 #plt.show()
