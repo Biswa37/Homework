@@ -60,23 +60,25 @@ for line in lines:
     mass_sum.append((vec1+vec2).M())
 
 hist, bin_edges = numpy.histogram(mass_sum,bins=num_bins)
-xdata = bin_edges[1:]
+xdata = 0.5*(bin_edges[1:]+bin_edges[:-1])
 ydata = hist
 
 n, bins, patches = plt.hist(mass_sum, num_bins, histtype=u'stepfilled',facecolor='green' , alpha=0.5)
 
-popt_1, pcov_1 = curve_fit(BW, xdata, ydata)
+x0 = np.array([1.02,0.0043])
+
+popt_1, pcov_1 = curve_fit(BW, xdata, ydata, p0=x0)
 perr_1 = np.sqrt(np.diag(pcov_1))
 
 plt.plot(xdata,BW(xdata,popt_1[0],popt_1[1]),'b-', lw=4,
     label=r'$\mathrm{Relatavistic \ BW:\ Mass=%.7f \pm %.7f \ GeV,}\ \Gamma=%.7f \pm %.7f$' %(popt_1[0], perr_1[0], popt_1[1], perr_1[1]))
 
-popt_2, pcov_2 = curve_fit(BW_NonR, xdata, ydata)
+popt_2, pcov_2 = curve_fit(BW_NonR, xdata, ydata, p0=x0)
 perr_2 = np.sqrt(np.diag(pcov_2))
 plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1]),'r--', lw=4,
     label=r'$\mathrm{Relatavistic \ BW:\ Mass=%.7f \pm %.7f \ GeV,}\ \Gamma=%.7f \pm %.7f$' %(popt_2[0], perr_2[0], popt_2[1], perr_2[1]))
 
-x0 = np.array([1.02,0.0043])
+
 #This is going to be the real problem. #jk
 popt_3, pcov_3 = curve_fit(BW_2, xdata, ydata, p0=x0)
 perr_3 = np.sqrt(np.diag(pcov_3))
