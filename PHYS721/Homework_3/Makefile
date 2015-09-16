@@ -5,8 +5,8 @@ CXX = clang++
 CXXFLAGS =      -O3 -fPIC -w -g $(shell root-config --cflags) 
 INCS =          -I$(shell root-config --incdir)
 LIBS =          $(shell root-config --glibs)
-TARGET =		Problem_1
-FILENAME=		Problem_1
+TARGET =		MVP
+FILENAME=		MVP
 
 all:	clean Problem_1
 

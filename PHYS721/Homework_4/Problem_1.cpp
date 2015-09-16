@@ -39,7 +39,7 @@ double bw_gamma(Double_t E , double mass, double gamma_0){
 }
 */
 int main(int argc, char const *argv[]) {
-	TCanvas *c1 = new TCanvas("c1","#phi -> k^+ k^-",800,800);
+	TCanvas *c1 = new TCanvas("c1","#phi -> K^+ K^-",800,800);
 
 	TF1 *myBW = new TF1("myBW","TMath::BreitWigner(x,[0],[1])", 0.9, 1.1);
 	TF1 *BW_nonR = new TF1("BW_nonR","((([1]/(2.0*3.14159)))/((x-[0])**2.0 + ([1]/2.0)**2.0))", 0.9, 1.1);
