@@ -115,4 +115,4 @@ plt.ylabel(r'Counts (#)')
 plt.legend()
 
 #plt.show()
-fig.savefig('Problem_3.pdf')
+fig.savefig('Problem_3_nobackfit.pdf')

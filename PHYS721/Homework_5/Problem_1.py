@@ -86,4 +86,4 @@ plt.ylabel(r'Counts (#)')
 plt.legend()
 
 #plt.show()
-fig.savefig('Problem_1.pdf')
+fig.savefig('Problem_1_and_2.pdf')

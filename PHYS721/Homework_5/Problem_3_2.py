@@ -120,4 +120,4 @@ plt.ylabel(r'Counts (#)')
 plt.legend()
 
 #plt.show()
-fig.savefig('Problem_3_chi.pdf')
+fig.savefig('Problem_3_withbackfit.pdf')
