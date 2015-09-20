@@ -105,11 +105,11 @@ perr_2 = np.sqrt(np.diag(pcov_2))
 plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1]),'r--', lw=4,
     label=r'$\mathrm{Non-Rel. \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_2[0], perr_2[0], popt_2[1], perr_2[1]))
 
-print "BW_non = ",sum(((BW_NonR(xdata,popt_2[0],popt_2[1])-ydata))**2)
+#print "BW_non = ",sum(((BW_NonR(xdata,popt_2[0],popt_2[1])-ydata))**2)
 
 plt.xlabel(r'Mass (GeV)')
 plt.ylabel(r'Counts (#)')
 plt.legend()
 
 #plt.show()
-fig.savefig('Problem_3.pdf')
+fig.savefig('PolyFits.pdf')
