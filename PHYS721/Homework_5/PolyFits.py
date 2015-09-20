@@ -18,26 +18,26 @@ vec1 = TLorentzVector()
 vec2 = TLorentzVector()
 num_bins = 60
 
-def BW(Energy,Mass,Gamma):
+def poly(x, c1, c2, c3):
+    return c1*x*x + c2*x + c3
+
+def BW(Energy,Mass,Gamma, c1, c2, c3):
     g = ((Mass**2.0 + Gamma**2.0)*Mass**2.0)**(1.0/2.0)
     k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
-    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma*Mass)**2.0))
+    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma*Mass)**2.0)) + poly(Energy, c1, c2, c3)
 
-def BW_NonR(Energy,Mass,Gamma):
-    return (((Gamma/(2.0*np.pi)))/((Energy-Mass)**2.0 + (Gamma/2.0)**2.0))
+def BW_NonR(Energy,Mass,Gamma, c1, c2, c3):
+    return (((Gamma/(2.0*np.pi)))/((Energy-Mass)**2.0 + (Gamma/2.0)**2.0)) + poly(Energy, c1, c2, c3)
 
-def BW_2(Energy,Mass,Gamma):
+def BW_2(Energy,Mass,Gamma, c1, c2, c3):
     g = abs((Mass**2.0 + Gamma*P_fac(Energy)**2.0)*Mass**2.0)**(1.0/2.0)
     k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma*P_fac(Energy) * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
-    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma*P_fac(Energy)*Mass)**2.0))
+    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma*P_fac(Energy)*Mass)**2.0)) + poly(Energy, c1, c2, c3)
 
 def P_fac(Energy):
     p = abs((Energy**2.0/4.0)-m_k**2.0)**(1.0/2.0)
     p0 = ((m_phi**2.0/4.0)-m_k**2.0)**(1.0/2.0)
     return (p/p0)**3.0
-
-def poly(x, c1, c2, c3):
-    return c1*x*x + c2*x + c3
 
 lines = [line.rstrip('\n') for line in open('data1')]
 
@@ -55,9 +55,9 @@ f1.SetParameter(1,-137780.0)
 f1.SetParameter(2,71916.0)
 """
 """ Convex
-f1.SetParameter(0,-36000.0)
-f1.SetParameter(1,73080.0)
-f1.SetParameter(2,-36866.0)
+f1.SetParameter(0,-8000.0)
+f1.SetParameter(1,15240.0)
+f1.SetParameter(2,-7096.8)
 """
 """reasonable """
 f1.SetParameter(0,-3.0)
@@ -78,34 +78,33 @@ ydata = hist
 
 n, bins, patches = plt.hist(mass_sum, num_bins, histtype=u'stepfilled',facecolor='g' , alpha=0.5)
 
-x0 = np.array([1.02,0.0043])
-
-####
-popt_4, pcov_4 = curve_fit(poly, xdata, ydata)
-perr_4 = np.sqrt(np.diag(pcov_4))
-plt.plot(xdata,poly(xdata,popt_4[0],popt_4[1],popt_4[2]),'g-', lw=4,
-    label=r'$\mathrm{Background = %.6f X^{2} + %.6f X + %.6f}$' %(popt_4[0], popt_4[1], popt_4[2]))
-
-#poly_bck = poly(xdata, popt_4[0], popt_4[1], popt_4[2])
-#n, bins, patches = plt.hist(poly_bck, num_bins, histtype=u'stepfilled',facecolor='b' , alpha=0.5)
-####
+x0 = np.array([1.02,0.0043,0,0,0])
 
 popt_3, pcov_3 = curve_fit(BW_2, xdata, ydata, p0=x0)
 perr_3 = np.sqrt(np.diag(pcov_3))
-plt.plot(xdata,BW_2(xdata,popt_3[0],popt_3[1]),'g-', lw=4,
+plt.plot(xdata,BW_2(xdata,popt_3[0],popt_3[1],popt_3[2],popt_3[3],popt_3[4]),'g-', lw=4,
     label=r'$\mathrm{Mass \ dep. \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_3[0], perr_3[0], popt_3[1], perr_3[1]))
+
+#plt.plot(xdata,poly(xdata,popt_3[2],popt_3[3],popt_3[4]),'k-', lw=4)
 
 popt_1, pcov_1 = curve_fit(BW, xdata, ydata, p0=x0)
 perr_1 = np.sqrt(np.diag(pcov_1))
-plt.plot(xdata,BW(xdata,popt_1[0],popt_1[1]),'b-.', lw=4,
+plt.plot(xdata,BW(xdata,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4]),'b-.', lw=4,
     label=r'$\mathrm{Relatavistic \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_1[0], perr_1[0], popt_1[1], perr_1[1]))
 
-popt_2, pcov_2 = curve_fit(BW_NonR, xdata, ydata, p0=np.array([1.02,0.0043]))
-perr_2 = np.sqrt(np.diag(pcov_2))
-plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1]),'r--', lw=4,
-    label=r'$\mathrm{Non-Rel. \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_2[0], perr_2[0], popt_2[1], perr_2[1]))
+#plt.plot(xdata,poly(xdata,popt_1[2],popt_1[3],popt_1[4]),'k-.', lw=4)
 
-#print "BW_non = ",sum(((BW_NonR(xdata,popt_2[0],popt_2[1])-ydata))**2)
+popt_2, pcov_2 = curve_fit(BW_NonR, xdata, ydata, p0=x0)
+perr_2 = np.sqrt(np.diag(pcov_2))
+plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1],popt_2[2],popt_2[3],popt_2[4]),'r--', lw=4,
+    label=r'$\mathrm{Non-Rel. \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_2[0], perr_2[0], popt_2[1], perr_2[1]))
+#plt.plot(xdata,poly(xdata,popt_2[2],popt_2[3],popt_2[4]),'k--', lw=4)
+
+print "BW_non = ",sum(((BW_NonR(xdata,popt_2[0],popt_2[1],popt_2[2],popt_2[3],popt_2[4])-ydata))**2)
+poly_params = np.array([(popt_2[2]+popt_3[2]+popt_1[2])/3.0,(popt_2[3]+popt_3[3]+popt_1[3])/3.0,(popt_2[4]+popt_3[4]+popt_1[4])/3.0])
+
+plt.plot(xdata,poly(xdata,poly_params[0],poly_params[1],poly_params[2]),'k-', lw=2,
+    label=r'$\mathrm{Average \ background =%.6f X^{2} + %.6f X + %.6f }$' %(poly_params[0],poly_params[1],poly_params[2]))
 
 plt.xlabel(r'Mass (GeV)')
 plt.ylabel(r'Counts (#)')

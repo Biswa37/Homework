@@ -80,16 +80,6 @@ n, bins, patches = plt.hist(mass_sum, num_bins, histtype=u'stepfilled',facecolor
 
 x0 = np.array([1.02,0.0043])
 
-####
-popt_4, pcov_4 = curve_fit(poly, xdata, ydata)
-perr_4 = np.sqrt(np.diag(pcov_4))
-plt.plot(xdata,poly(xdata,popt_4[0],popt_4[1],popt_4[2]),'g-', lw=4,
-    label=r'$\mathrm{Background = %.6f X^{2} + %.6f X + %.6f}$' %(popt_4[0], popt_4[1], popt_4[2]))
-
-#poly_bck = poly(xdata, popt_4[0], popt_4[1], popt_4[2])
-#n, bins, patches = plt.hist(poly_bck, num_bins, histtype=u'stepfilled',facecolor='b' , alpha=0.5)
-####
-
 popt_3, pcov_3 = curve_fit(BW_2, xdata, ydata, p0=x0)
 perr_3 = np.sqrt(np.diag(pcov_3))
 plt.plot(xdata,BW_2(xdata,popt_3[0],popt_3[1]),'g-', lw=4,
