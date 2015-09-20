@@ -34,6 +34,16 @@ def P_fac(Energy):
     p0 = ((m_phi**2.0/4.0)-m_k**2.0)**(1.0/2.0)
     return (p/p0)**3.0
 
+def chi_2(ys,yknown):
+    total = 0
+    for i in xrange(len(yknown)):
+        temp = (ys[i]-yknown[i])**2.0
+        if yknown[i] == 0:
+            total += temp
+        else :
+            total += temp/yknown[i]
+    return total
+
 lines = [line.rstrip('\n') for line in open('data1')]
 
 for line in lines:
@@ -50,25 +60,26 @@ n, bins, patches = plt.hist(mass_sum, num_bins, histtype=u'stepfilled',facecolor
 
 x0 = np.array([1.02,0.0043])
 
+popt_3, pcov_3 = curve_fit(BW_2, xdata, ydata, p0=x0)
+perr_3 = np.sqrt(np.diag(pcov_3))
+plt.plot(xdata,BW_2(xdata,popt_3[0],popt_3[1]),'g-', lw=4,
+    label=r'$\mathrm{Mass \ dep. \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_3[0], perr_3[0], popt_3[1], perr_3[1]))
+plt.plot(xdata,BW_2(xdata,popt_3[0],popt_3[1]),'g-', lw=4,
+    label=r'$\mathrm{Mass \ dep. \ BW \ : \ \chi^{2} = %.6f}$' %(chi_2(BW_2(xdata,popt_3[0],popt_3[1]),ydata)))
+
 popt_1, pcov_1 = curve_fit(BW, xdata, ydata, p0=x0)
 perr_1 = np.sqrt(np.diag(pcov_1))
-
-plt.plot(xdata,BW(xdata,popt_1[0],popt_1[1]),'b-', lw=4,
-    label=r'$\mathrm{Relatavistic \ BW:\ Mass=%.7f \pm %.7f \ GeV,}\ \Gamma=%.7f \pm %.7f$' %(popt_1[0], perr_1[0], popt_1[1], perr_1[1]))
-print "BW = ",sum(((BW(xdata,popt_1[0],popt_1[1])-ydata)**2.0))
+plt.plot(xdata,BW(xdata,popt_1[0],popt_1[1]),'b-.', lw=4,
+    label=r'$\mathrm{Relatavistic \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_1[0], perr_1[0], popt_1[1], perr_1[1]))
+plt.plot(xdata,BW(xdata,popt_1[0],popt_1[1]),'b-.', lw=4,
+    label=r'$\mathrm{Relatavistic \ BW: \ \chi^{2} = %.6f}$' %(chi_2(BW(xdata,popt_1[0],popt_1[1]),ydata)))
 
 popt_2, pcov_2 = curve_fit(BW_NonR, xdata, ydata, p0=x0)
 perr_2 = np.sqrt(np.diag(pcov_2))
 plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1]),'r--', lw=4,
-    label=r'$\mathrm{Non-Rel. \ BW:\ Mass=%.7f \pm %.7f \ GeV,}\ \Gamma=%.7f \pm %.7f$' %(popt_2[0], perr_2[0], popt_2[1], perr_2[1]))
-print "BW_non = ",sum(((BW_NonR(xdata,popt_2[0],popt_2[1])-ydata))**2)
-
-#This is going to be the real problem. #jk
-popt_3, pcov_3 = curve_fit(BW_2, xdata, ydata, p0=x0)
-perr_3 = np.sqrt(np.diag(pcov_3))
-plt.plot(xdata,BW_2(xdata,popt_3[0],popt_3[1]),'g-.', lw=4,
-    label=r'$\mathrm{Mass \ dep. \ BW:\ Mass=%.7f \pm %.7f \ GeV,}\ \Gamma=%.7f \pm %.7f$' %(popt_3[0], perr_3[0], popt_3[1], perr_3[1]))
-print "BW_2 = ",sum(((BW_2(xdata,popt_3[0],popt_3[1])-ydata))**2)
+    label=r'$\mathrm{Non-Rel. \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_2[0], perr_2[0], popt_2[1], perr_2[1]))
+plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1]),'r--', lw=4,
+    label=r'$\mathrm{Non-Rel. \ BW: \ \chi^{2} = %.6f}$' %(chi_2(BW_NonR(xdata,popt_2[0],popt_2[1]),ydata)))
 
 plt.xlabel(r'Mass (GeV)')
 plt.ylabel(r'Counts (#)')
