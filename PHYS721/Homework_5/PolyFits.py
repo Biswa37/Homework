@@ -85,20 +85,15 @@ perr_3 = np.sqrt(np.diag(pcov_3))
 plt.plot(xdata,BW_2(xdata,popt_3[0],popt_3[1],popt_3[2],popt_3[3],popt_3[4]),'g-', lw=4,
     label=r'$\mathrm{Mass \ dep. \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_3[0], perr_3[0], popt_3[1], perr_3[1]))
 
-#plt.plot(xdata,poly(xdata,popt_3[2],popt_3[3],popt_3[4]),'k-', lw=4)
-
 popt_1, pcov_1 = curve_fit(BW, xdata, ydata, p0=x0)
 perr_1 = np.sqrt(np.diag(pcov_1))
 plt.plot(xdata,BW(xdata,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4]),'b-.', lw=4,
     label=r'$\mathrm{Relatavistic \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_1[0], perr_1[0], popt_1[1], perr_1[1]))
 
-#plt.plot(xdata,poly(xdata,popt_1[2],popt_1[3],popt_1[4]),'k-.', lw=4)
-
 popt_2, pcov_2 = curve_fit(BW_NonR, xdata, ydata, p0=x0)
 perr_2 = np.sqrt(np.diag(pcov_2))
 plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1],popt_2[2],popt_2[3],popt_2[4]),'r--', lw=4,
     label=r'$\mathrm{Non-Rel. \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_2[0], perr_2[0], popt_2[1], perr_2[1]))
-#plt.plot(xdata,poly(xdata,popt_2[2],popt_2[3],popt_2[4]),'k--', lw=4)
 
 print "BW_non = ",sum(((BW_NonR(xdata,popt_2[0],popt_2[1],popt_2[2],popt_2[3],popt_2[4])-ydata))**2)
 poly_params = np.array([(popt_2[2]+popt_3[2]+popt_1[2])/3.0,(popt_2[3]+popt_3[3]+popt_1[3])/3.0,(popt_2[4]+popt_3[4]+popt_1[4])/3.0])
