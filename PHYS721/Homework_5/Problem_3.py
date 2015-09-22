@@ -47,7 +47,7 @@ def chi_2(ys,yknown):
             total += temp
         else :
             total += temp/yknown[i]
-    return total
+    return total/len(yknown)
 
 lines = [line.rstrip('\n') for line in open('data1')]
 

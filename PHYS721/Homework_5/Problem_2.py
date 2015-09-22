@@ -6,8 +6,6 @@ from scipy.integrate import quad
 from StringIO import StringIO
 from ROOT import TLorentzVector
 from scipy.optimize import curve_fit
-from ROOT import TRandom
-from ROOT import TF1
 
 fig = plt.figure(num=None, figsize=(15, 15), dpi=200, facecolor='w', edgecolor='k')
 m_k = 0.493677
@@ -27,12 +25,12 @@ def BW_NonR(Energy,Mass,Gamma):
     return (((Gamma/(2.0*np.pi)))/((Energy-Mass)**2.0 + (Gamma/2.0)**2.0))
 
 def BW_2(Energy,Mass,Gamma):
-    g = abs((Mass**2.0 + Gamma*P_fac(Energy)**2.0)*Mass**2.0)**(1.0/2.0)
+    g = ((Mass**2.0 + Gamma*P_fac(Energy)**2.0)*Mass**2.0)**(1.0/2.0)
     k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma*P_fac(Energy) * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
     return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma*P_fac(Energy)*Mass)**2.0))
 
 def P_fac(Energy):
-    p = abs((Energy**2.0/4.0)-m_k**2.0)**(1.0/2.0)
+    p = ((Energy**2.0/4.0)-m_k**2.0)**(1.0/2.0)
     p0 = ((m_phi**2.0/4.0)-m_k**2.0)**(1.0/2.0)
     return (p/p0)**3.0
 
@@ -44,7 +42,7 @@ def chi_2(ys,yknown):
             total += temp
         else :
             total += temp/yknown[i]
-    return total
+    return total/len(yknown)
 
 lines = [line.rstrip('\n') for line in open('data1')]
 
@@ -76,7 +74,6 @@ popt_2, pcov_2 = curve_fit(BW_NonR, xdata, ydata, p0=x0)
 perr_2 = np.sqrt(np.diag(pcov_2))
 plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1]),'r--', lw=4,
     label=r'$\mathrm{Non-Rel. \ BW  \ : \ \chi^{2} = %.6f}$' %(chi_2(BW_NonR(xdata,popt_2[0],popt_2[1]),ydata)))
-
 
 plt.xlabel(r'Mass (GeV)')
 plt.ylabel(r'Counts (#)')

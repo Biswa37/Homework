@@ -14,7 +14,7 @@ m_phi = 1.019461
 mass_sum = []
 vec1 = TLorentzVector()
 vec2 = TLorentzVector()
-num_bins = 65
+num_bins = 60
 
 def BW(Energy,Mass,Gamma):
     g = ((Mass**2.0 + Gamma**2.0)*Mass**2.0)**(1.0/2.0)
@@ -42,7 +42,7 @@ def chi_2(ys,yknown):
             total += temp
         else :
             total += temp/yknown[i]
-    return total
+    return total/len(yknown)
 
 lines = [line.rstrip('\n') for line in open('data1')]
 

@@ -44,10 +44,10 @@ def chi_2(ys,yknown):
     for i in xrange(len(yknown)):
         temp = (ys[i]-yknown[i])**2.0
         if yknown[i] == 0:
-            total += temp
+            total += 1#temp
         else :
             total += temp/yknown[i]
-    return total
+    return total/len(yknown)
 
 lines = [line.rstrip('\n') for line in open('data1')]
 
