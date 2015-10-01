@@ -9,7 +9,7 @@ from scipy.optimize import curve_fit
 from ROOT import TRandom
 from ROOT import TF1
 
-#fig = plt.figure(num=None, figsize=(15, 15), dpi=200, facecolor='w', edgecolor='k')
+fig = plt.figure(num=None, figsize=(15, 15), dpi=200, facecolor='w', edgecolor='k')
 m_k = 126.0/2.0
 #m_k = 0.493677
 m_phi = 126.5
@@ -62,7 +62,7 @@ ydata = hist
 x0 = np.array([126.5,1.66,1,1,1])
 
 n, bins, patches = plt.hist(photon_pair_mass, num_bins, histtype=u'stepfilled',facecolor='g' , alpha=0.5)
-#plt.errorbar(xdata, ydata,fmt='r+')
+#plt.errorbar(xdata, ydata,fmt='g.')
 
 popt_3, pcov_3 = curve_fit(BW_2, xdata, ydata, p0=x0)
 perr_3 = np.sqrt(np.diag(pcov_3))
@@ -85,14 +85,15 @@ plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1],popt_2[2],popt_2[3],popt_2[4]),
 plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1],popt_2[2],popt_2[3],popt_2[4]),'r--', lw=4,
     label=r'$\mathrm{Non-Rel. \ BW  \ : \ \chi^{2} = %.6f}$' %(chi_2(BW_NonR(xdata,popt_2[0],popt_2[1],popt_2[2],popt_2[3],popt_2[4]),ydata)))
 
-poly_params = np.array([(popt_2[2]+popt_3[2]+popt_1[2])/3.0,(popt_2[3]+popt_3[3]+popt_1[3])/3.0,(popt_2[4]+popt_3[4]+popt_1[4])/3.0])
+avg_param = lambda n: (popt_2[n]+popt_3[n]+popt_1[n])/3.0
+poly_params = np.array([avg_param(2),avg_param(3),avg_param(4)])
 #print poly_params
-plt.plot(xdata,poly(xdata,poly_params[0],poly_params[1],poly_params[2]),'k-', lw=2)
+#plt.plot(xdata,poly(xdata,poly_params[0],poly_params[1],poly_params[2]),'k-', lw=2)
 plt.legend()
 
 plt.xlabel(r'Mass (GeV)')
 plt.ylabel(r'Counts (#)')
 
 #plt.gca().set_yscale("log")
-plt.show()
-#fig.savefig('Problem_3_withbackfit.pdf')
+#plt.show()
+fig.savefig('Problem_1.pdf')
