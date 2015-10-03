@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from astropy.modeling import models, fitting
 import numpy 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -57,13 +58,8 @@ plt.plot(xdata,gaus_poly(xdata,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4]
     label=r'$\mathrm{Poly\ bkg\ gaus\ peak\ :\ Mass=%.4f \pm %.4f \ GeV,}\ \Gamma=%.4f \pm %.4f$' %(popt_1[0], perr_1[0], popt_1[1], perr_1[1]))
 
 poly_params = np.array([popt_1[3],popt_1[4],popt_1[5]])
-bkg_int = quad(poly, 0, 1000, args=(poly_params[0],poly_params[1],poly_params[2]))
-sig_int = quad(gaus_poly, 0, 1000, args=(popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4],popt_1[5]))
 
 signal_line = lambda x : gaus_poly(x,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4],popt_1[5]) - poly(x, poly_params[0],poly_params[1],poly_params[2])
-
-sigma = 100-abs(bkg_int[0]-sig_int[0])
-
 
 c2 = chi_2(gaus_poly(xdata,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4],popt_1[5]),ydata)
 
@@ -82,9 +78,45 @@ plt.plot(xdata,poly(xdata,poly_params[0],poly_params[1],poly_params[2]),'k-', lw
 plt.plot(xdata,signal_line(xdata),'r-',lw=3, label=r'$\mathrm{Gaussian}$')
 
 plt.legend()
-plt.xlabel(r'$\mathrm{m_{\gamma \gamma} (GeV)}$', fontsize=30)
+plt.xlabel(r'$\mathrm{m_{\gamma \gamma} (GeV)}$', fontsize=20)
+plt.ylabel(r'Counts (#)', fontsize=18)
+plt.ylim((0,np.max(ydata)))
+plt.xlim((np.min(xdata),np.max(xdata)))
+
+#astropy fitting
+degree = 2
+bck_init = models.Polynomial1D(degree=degree)
+fit_bck = fitting.LinearLSQFitter()
+b = fit_bck(bck_init, xdata, ydata)
+
+g_init = models.Gaussian1D(amplitude=1E10, mean=mass, stddev=width) + models.Polynomial1D(degree=degree)
+fit_g = fitting.LevMarLSQFitter()
+g = fit_g(g_init, xdata, ydata)
+c2 = (g(xdata)-ydata)**2 /g(xdata)
+c2 = np.sum(c2)/num_bins
+
+plt.plot(xdata, g(xdata),'b--', lw=4, 
+    label=r'$\mathrm{Poly\ bkg\ gaus\ peak\ :\ Mass=%.4f \pm %.4f \ GeV,}\ \Gamma=%.4f \pm %.4f$' %(g.parameters[1],0,g.parameters[2],0))
+plt.plot(xdata, g(xdata),'b--', lw=4, 
+    label=r'$\mathrm{Poly\ bkg\ gaus\ peak\ : \ \chi^{2} = %.4f \ \ \ \sigma = %.1f}$' %(c2,0))
+
+plt.plot(xdata, b(xdata), 'k-', label='$\mathrm{Background}$', lw=2)
+plt.plot(xdata, g(xdata)-b(xdata), 'r-', label='$\mathrm{Gausian}$', lw=3)
+
+signal = []
+for i in xrange(num_bins):
+    temp = ydata[i] - b(xdata[i])
+    if temp <= 0:
+        temp = 0
+    signal.append(temp)
+
+plt.scatter(xdata, signal ,marker='o', color='r', label=r'$\mathrm{Signal}$')
+
+plt.legend()
+plt.xlabel(r'$\mathrm{m_{\gamma \gamma} (GeV)}$', fontsize=20)
 plt.ylabel(r'Counts (#)', fontsize=18)
 plt.ylim((0,np.max(ydata)))
 plt.xlim((np.min(xdata),np.max(xdata)))
 #plt.show()
-fig.savefig('Problem_1.pdf')
+fig.savefig('both.pdf')
+
