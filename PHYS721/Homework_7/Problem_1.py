@@ -4,40 +4,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import quad
 from StringIO import StringIO
-from ROOT import TLorentzVector
 from scipy.optimize import curve_fit
-from ROOT import TRandom
-from ROOT import TF1
 
 fig = plt.figure(num=None, figsize=(15, 15), dpi=200, facecolor='w', edgecolor='k')
-m_k = 126.0/2.0
-#m_k = 0.493677
-m_phi = 126.5
-#m_phi = 1.019461
 
 photon_pair_mass = []
-num_bins = 100
+num_bins = 50
+mass = 126.5
+width = 1.66
+
 
 def poly(x, c1, c2, c3):
     return c1*x*x + c2*x + c3
 
-def BW(Energy,Mass,Gamma, c1, c2, c3):
-    g = ((Mass**2.0 + Gamma**2.0)*Mass**2.0)**(1.0/2.0)
-    k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
-    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma*Mass)**2.0)) + poly(Energy, c1, c2, c3)
+def gaussian(x, mu, sig, const):
+    return const * np.exp(-(x - mu)**2 / 2*sig**2)
 
-def BW_NonR(Energy,Mass,Gamma, c1, c2, c3):
-    return (((Gamma/(2.0*np.pi)))/((Energy-Mass)**2.0 + (Gamma/2.0)**2.0)) + poly(Energy, c1, c2, c3)
-
-def BW_2(Energy,Mass,Gamma, c1, c2, c3):
-    g = abs((Mass**2.0 + Gamma*P_fac(Energy)**2.0)*Mass**2.0)**(1.0/2.0)
-    k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma*P_fac(Energy) * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
-    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma*P_fac(Energy)*Mass)**2.0)) + poly(Energy, c1, c2, c3)
-
-def P_fac(Energy):
-    p = abs((Energy**2.0/4.0)-m_k**2.0)**(1.0/2.0)
-    p0 = ((m_phi**2.0/4.0)-m_k**2.0)**(1.0/2.0)
-    return (p/p0)**3.0
+def gaus_poly(x, mu, sig, cont, c1, c2, c3):
+    return poly(x, c1, c2, c3) + gaussian(x, mu, sig, cont)
 
 def chi_2(ys,yknown):
     total = 0
@@ -55,45 +39,49 @@ for line in lines:
     a = np.array(np.loadtxt(StringIO(line)))
     photon_pair_mass.append(a)
 
+photon_pair_mass = np.array(photon_pair_mass)
 hist, bin_edges = numpy.histogram(photon_pair_mass,bins=num_bins)
 xdata = 0.5*(bin_edges[1:]+bin_edges[:-1])
 ydata = hist
 
-x0 = np.array([126.5,1.66,1,1,1])
+x0 = np.array([mass,width,1E10,1,1,1])
 
-n, bins, patches = plt.hist(photon_pair_mass, num_bins, histtype=u'stepfilled',facecolor='g' , alpha=0.5)
-#plt.errorbar(xdata, ydata,fmt='g.')
+n, bins, patches = plt.hist(photon_pair_mass, num_bins, histtype=u'stepfilled',facecolor='g' , alpha=0.45)
 
-popt_3, pcov_3 = curve_fit(BW_2, xdata, ydata, p0=x0)
-perr_3 = np.sqrt(np.diag(pcov_3))
-plt.plot(xdata,BW_2(xdata,popt_3[0],popt_3[1],popt_3[2],popt_3[3],popt_3[4]),'g-', lw=4,
-    label=r'$\mathrm{Mass \ dep. \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_3[0], perr_3[0], popt_3[1], perr_3[1]))
-plt.plot(xdata,BW_2(xdata,popt_3[0],popt_3[1],popt_3[2],popt_3[3],popt_3[4]),'g-', lw=4,
-    label=r'$\mathrm{Mass \ dep. \ BW \ : \ \chi^{2} = %.6f}$' %(chi_2(BW_2(xdata,popt_3[0],popt_3[1],popt_3[2],popt_3[3],popt_3[4]),ydata)))
-
-popt_1, pcov_1 = curve_fit(BW, xdata, ydata, p0=x0)
+popt_1, pcov_1 = curve_fit(poly, xdata, ydata)
+x0 = np.array([mass,width,1,popt_1[0],popt_1[1],popt_1[2]])
+popt_1, pcov_1 = curve_fit(gaus_poly, xdata, ydata, p0=x0)
 perr_1 = np.sqrt(np.diag(pcov_1))
-plt.plot(xdata,BW(xdata,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4]),'b-.', lw=4,
-    label=r'$\mathrm{Relatavistic \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_1[0], perr_1[0], popt_1[1], perr_1[1]))
-plt.plot(xdata,BW(xdata,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4]),'b-.', lw=4,
-    label=r'$\mathrm{Rel. \ BW \ : \ \chi^{2} = %.6f}$' %(chi_2(BW(xdata,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4]),ydata)))
 
-popt_2, pcov_2 = curve_fit(BW_NonR, xdata, ydata, p0=x0)
-perr_2 = np.sqrt(np.diag(pcov_2))
-plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1],popt_2[2],popt_2[3],popt_2[4]),'r--', lw=4,
-    label=r'$\mathrm{Non-Rel. \ BW:\ Mass=%.6f \pm %.6f \ GeV,}\ \Gamma=%.6f \pm %.6f$' %(popt_2[0], perr_2[0], popt_2[1], perr_2[1]))
-plt.plot(xdata,BW_NonR(xdata,popt_2[0],popt_2[1],popt_2[2],popt_2[3],popt_2[4]),'r--', lw=4,
-    label=r'$\mathrm{Non-Rel. \ BW  \ : \ \chi^{2} = %.6f}$' %(chi_2(BW_NonR(xdata,popt_2[0],popt_2[1],popt_2[2],popt_2[3],popt_2[4]),ydata)))
+plt.plot(xdata,gaus_poly(xdata,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4],popt_1[5]),'b--', lw=4,
+    label=r'$\mathrm{Poly\ bkg\ gaus\ peak\ :\ Mass=%.4f \pm %.4f \ GeV,}\ \Gamma=%.4f \pm %.4f$' %(popt_1[0], perr_1[0], popt_1[1], perr_1[1]))
 
-avg_param = lambda n: (popt_2[n]+popt_3[n]+popt_1[n])/3.0
-poly_params = np.array([avg_param(2),avg_param(3),avg_param(4)])
-#print poly_params
-#plt.plot(xdata,poly(xdata,poly_params[0],poly_params[1],poly_params[2]),'k-', lw=2)
+poly_params = np.array([popt_1[3],popt_1[4],popt_1[5]])
+bkg_int = quad(poly, 0, 1000, args=(poly_params[0],poly_params[1],poly_params[2]))
+sig_int = quad(gaus_poly, 0, 1000, args=(popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4],popt_1[5]))
+
+sigma = 100-abs(bkg_int[0]-sig_int[0])
+
+
+c2 = chi_2(gaus_poly(xdata,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4],popt_1[5]),ydata)
+
+plt.plot(xdata,gaus_poly(xdata,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4],popt_1[5]),'b--', lw=4,
+    label=r'$\mathrm{Poly\ bkg\ gaus\ peak\ : \ \chi^{2} = %.4f \ \ \ \sigma = %.1f}$' %(c2,0))
+
+signal = []
+for i in xrange(num_bins):
+    temp = ydata[i] - poly(xdata[i],poly_params[0],poly_params[1],poly_params[2])
+    if temp <= 0:
+        temp = 0
+    signal.append(temp)
+
+plt.scatter(xdata, signal,marker='o', color='r', label=r'$\mathrm{Signal}$')
+plt.plot(xdata,poly(xdata,poly_params[0],poly_params[1],poly_params[2]),'k-', lw=2, label=r'$\mathrm{Background}$')
+plt.plot(xdata,gaussian(xdata,popt_1[0],popt_1[1],popt_1[2]),'r-',lw=3, label=r'$\mathrm{Gaussian}$')
 plt.legend()
-
-plt.xlabel(r'Mass (GeV)')
-plt.ylabel(r'Counts (#)')
-
-#plt.gca().set_yscale("log")
+plt.xlabel(r'$\mathrm{m_{\gamma \gamma} (GeV)}$', fontsize=20)
+plt.ylabel(r'Counts (#)', fontsize=18)
+plt.ylim((0,np.max(ydata)))
+plt.xlim((np.min(xdata),np.max(xdata)))
 #plt.show()
 fig.savefig('Problem_1.pdf')
