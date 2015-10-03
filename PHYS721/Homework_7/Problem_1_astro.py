@@ -10,7 +10,7 @@ from scipy.optimize import curve_fit
 fig = plt.figure(num=None, figsize=(15, 15), dpi=200, facecolor='w', edgecolor='k')
 
 photon_pair_mass = []
-num_bins = 50
+num_bins = 40
 mass = 126.5
 width = 1.66
 
