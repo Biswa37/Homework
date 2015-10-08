@@ -26,12 +26,12 @@ xdata = 0.5*(bin_edges[1:]+bin_edges[:-1])
 ydata = hist
 
 #astropy fitting
-degree = 4
+degree = 2
 bck_init = models.Polynomial1D(degree=degree)
-fit_bck = fitting.LinearLSQFitter()
+fit_bck = fitting.LevMarLSQFitter()
 b = fit_bck(bck_init, xdata, ydata)
 
-g_init = models.Gaussian1D(amplitude=1E10, mean=mass, stddev=width) + models.Polynomial1D(degree=degree)
+g_init = models.Gaussian1D(amplitude=1E10, mean=mass) + models.Polynomial1D(degree=degree)
 fit_g = fitting.LevMarLSQFitter()
 g = fit_g(g_init, xdata, ydata)
 c2 = (g(xdata)-ydata)**2 /g(xdata)
@@ -46,16 +46,21 @@ plt.plot(xdata, g(xdata),'b--', lw=4,
     label=r'$\mathrm{Poly\ bkg\ gaus\ peak\ : \ \chi^{2} = %.4f \ \ \ \sigma = %.1f}$' %(c2,0))
 
 plt.plot(xdata, b(xdata), 'k-', label='$\mathrm{Background}$', lw=2)
-plt.plot(xdata, g(xdata)-b(xdata), 'r-', label='$\mathrm{Gausian}$', lw=3)
+#plt.plot(xdata, g(xdata)-b(xdata), 'r-', label='$\mathrm{Gausian}$', lw=3)
 
 signal = []
 for i in xrange(num_bins):
     temp = ydata[i] - b(xdata[i])
-    if temp <= 0:
-        temp = 0
+    #if temp < 0:
+    #	temp = -temp
     signal.append(temp)
 
 plt.scatter(xdata, signal ,marker='o', color='r', label=r'$\mathrm{Signal}$')
+g2_init = models.Gaussian1D(amplitude=1E10, mean=mass)
+fit_g2 = fitting.LevMarLSQFitter()
+g2 = fit_g2(g2_init, xdata, signal)
+plt.plot(xdata, g2(xdata), 'r-', lw=3,
+	label=r'$\mathrm{Poly\ bkg\ gaus\ peak\ :\ Mass=%.4f \pm %.4f \ GeV,}\ \Gamma=%.4f \pm %.4f$' %(g2.parameters[1],0,g2.parameters[2],0))
 
 bkg_int = quad(b, 100, 160)
 sig_int = quad(g, 100, 160)
