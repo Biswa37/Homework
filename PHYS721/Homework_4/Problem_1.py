@@ -1,31 +1,40 @@
 #!/usr/bin/env python
-import numpy 
+import numpy
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.integrate import quad
+"""from scipy.integrate import quad"""
 
-fig = plt.figure(num=None, figsize=(15, 15), dpi=200, facecolor='w', edgecolor='k')
+fig = plt.figure(
+    num=None,
+    figsize=(15, 15),
+    dpi=200,
+    facecolor='w',
+    edgecolor='k'
+    )
 num_bins = 10000
 m_k = 0.493677
 m_phi = 1.019461
 mass = 1.019461
 gamma = 0.00426
 
-def BW(Energy,Mass,Gamma):
+
+def BW(Energy, Mass, Gamma):
     g = ((Mass**2.0 + Gamma**2.0)*Mass**2.0)**(1.0/2.0)
     k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
     return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma*Mass)**2.0))
 
-def BW_NonR(Energy,Mass,Gamma):
+
+def BW_NonR(Energy, Mass, Gamma):
     return (((Gamma/(2.0*np.pi)))/((Energy-Mass)**2.0 + (Gamma/2.0)**2.0))
- 
-def BW_2(Energy,Mass,Gamma_0):
-    g = ((Mass**2.0 + Gamma_P(Energy,Gamma_0)**2.0)*Mass**2.0)**(1.0/2.0)
-    k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma_P(Energy,Gamma_0) * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
-    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma_P(Energy,Gamma_0)*Mass)**2.0))
 
 
-def Gamma_P(Energy,Gamma_0):
+def BW_2(Energy, Mass, Gamma_0):
+    g = ((Mass**2.0 + Gamma_P(Energy, Gamma_0)**2.0)*Mass**2.0)**(1.0/2.0)
+    k = (2.0 * 2.0**(1.0/2.0) * Mass * Gamma_P(Energy, Gamma_0) * g)/(np.pi * (Mass**(2.0)+g)**(1.0/2.0))
+    return (k/((Energy**2.0-Mass**2.0)**2.0 + (Gamma_P(Energy, Gamma_0)*Mass)**2.0))
+
+
+def Gamma_P(Energy, Gamma_0):
     p = ((Energy**2.0/4.0)-m_k**2.0)**(1.0/2.0)
     p0 = ((m_phi**2.0/4.0)-m_k**2.0)**(1.0/2.0)
     return Gamma_0*(p/p0)**3.0
@@ -33,7 +42,7 @@ def Gamma_P(Energy,Gamma_0):
 
 """
 My homemade algorithm for getting FWHM
-Imporve it by changing sigma to be dynamic to adapt to changing widths 
+Imporve it by changing sigma to be dynamic to adapt to changing widths
 
 """
 def FWHM(x,y):
@@ -59,7 +68,6 @@ y3 = BW_2(x,mass,gamma)
 temp_1, val_1 = FWHM(x,y1)
 temp_2, val_2 = FWHM(x,y2)
 temp_3, val_3 = FWHM(x,y3)
-
 
 plt.plot(x,y1,'g-',lw=4,
     label=r'$\mathrm{Relatavistic \ BW:\ Peak=%.7f \ GeV,}\ FWHM=%.7f \ GeV$' %(max(y1), val_1))

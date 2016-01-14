@@ -14,7 +14,6 @@ num_bins = 50
 mass = 126.5
 width = 1.66
 
-
 def poly(x, c1, c2, c3):
     return c1*x*x + c2*x + c3
 
@@ -44,7 +43,7 @@ photon_pair_mass = np.array(photon_pair_mass)
 hist, bin_edges = numpy.histogram(photon_pair_mass,bins=num_bins)
 xdata = 0.5*(bin_edges[1:]+bin_edges[:-1])
 ydata = hist
-
+ydataself.
 x0 = np.array([mass,width,1E10,1,1,1])
 
 n, bins, patches = plt.hist(photon_pair_mass, num_bins, histtype=u'stepfilled',facecolor='g' , alpha=0.45)
@@ -72,7 +71,7 @@ for i in xrange(num_bins):
     if temp <= 0:
         temp = 0
     signal.append(temp)
-
+    
 plt.scatter(xdata, signal,marker='o', color='r', label=r'$\mathrm{Signal}$')
 plt.plot(xdata,poly(xdata,poly_params[0],poly_params[1],poly_params[2]),'k-', lw=2, label=r'$\mathrm{Background}$')
 plt.plot(xdata,signal_line(xdata),'r-',lw=3, label=r'$\mathrm{Gaussian}$')
