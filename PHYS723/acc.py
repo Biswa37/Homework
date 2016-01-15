@@ -14,15 +14,15 @@ with open('acc.json') as data_file:
 
 df = pd.DataFrame(data["Accelerator"])
 df['logE'] = df["Energy_MeV"].apply(np.log)
-types = np.hstack(np.array(df['type']))
+types = np.hstack(np.array(df['Type']))
 
 uniq = np.unique(types)
 values = cm.rainbow(np.linspace(0,1,len(uniq)))
 col = dict(zip(uniq, values))
 
 for i,acc in zip(xrange(len(uniq)),uniq):
-    temp = df[df['type'] == acc]
-    year = np.hstack(np.array(temp['year']))
+    temp = df[df['Type'] == acc]
+    year = np.hstack(np.array(temp['Year']))
     logE = np.hstack(np.array(temp['logE']))
     c = col[acc]
     plt.scatter(year, logE, alpha=1,color=c,label=r'%s' %(acc))
