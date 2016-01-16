@@ -67,5 +67,15 @@
 		{"Type" : "Hadron-Collider", "Year" : 2000 , "Energy_MeV" : 200e3},
 		{"Type" : "Hadron-Collider", "Year" : 2008 , "Energy_MeV" : 13e6},
 		{"Type" : "Hadron-Collider", "Year" : 2008 , "Energy_MeV" : 5.52e6}
+	],
+	"Luminosity": [
+		{"Type" : "SPS", "Year" : 1981 , "Lum_per_cm2s" : 6.0e30},
+		{"Type" : "Tevatron", "Year" : 1983 , "Lum_per_cm2s" : 5.0e31},
+		{"Type" : "HERA", "Year" : 1992 , "Lum_per_cm2s" : 4.0e31},
+		{"Type" : "LHC", "Year" : 2008 , "Lum_per_cm2s" : 1.0e34},
+		{"Type" : "LEP", "Year" : 1989 , "Lum_per_cm2s" : 1.0e32},
+		{"Type" : "PEP", "Year" : 1998 , "Lum_per_cm2s" : 3.0e33},
+		{"Type" : "KEKB", "Year" : 2009 , "Lum_per_cm2s" : 2.11e34}
+
 	]
 }
