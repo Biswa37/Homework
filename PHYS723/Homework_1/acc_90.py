@@ -14,13 +14,17 @@ with open('acc.json') as data_file:
 
 df_acc = pd.DataFrame(data["Accelerator"])
 df_lum = pd.DataFrame(data["Luminosity"])
+
+df_acc = df_acc[df_acc['Year'] >= 1990]
+df_lum = df_lum[df_lum['Year'] >= 1990]
+
 df_acc['logE'] = df_acc["Energy_MeV"].apply(np.log)
 df_lum['logLum'] = df_lum["Lum_per_cm2s"].apply(np.log)
 types_acc = np.hstack(np.array(df_acc['Type']))
 types_lum = np.hstack(np.array(df_lum['Type']))
 
 uniq_acc = np.unique(types_acc)
-values = cm.rainbow(np.linspace(0,1,len(uniq_acc)))
+values = cm.viridis(np.linspace(0,1,len(uniq_acc)))
 col = dict(zip(uniq_acc, values))
 
 for i,acc in zip(xrange(len(uniq_acc)),uniq_acc):
@@ -33,11 +37,11 @@ plt.xlabel('Year')
 plt.ylabel(r'Energy $\mathrm{log(MeV)}$')
 plt.title('Livingston Plot for Energy')
 plt.legend(loc=4)
-plt.savefig("acc_logE.png")
+plt.savefig("acc_logE_90.png")
 
 fig = plt.figure(num=None, figsize=fig_size, dpi=200, facecolor='w', edgecolor='k')
 uniq_lum = np.unique(types_lum)
-values = cm.rainbow(np.linspace(0,1,len(uniq_lum)))
+values = cm.viridis(np.linspace(0,1,len(uniq_lum)))
 col = dict(zip(uniq_lum, values))
 
 for i,acc in zip(xrange(len(uniq_lum)),uniq_lum):
@@ -50,4 +54,4 @@ plt.xlabel('Year')
 plt.ylabel(r'Luminosity $\mathrm{log(cm^{-2} s^{-1})}$')
 plt.title('Livingston Plot for Luminosity')
 plt.legend(loc=4)
-plt.savefig("acc_LogLum.png")
+plt.savefig("acc_LogLum_90.png")
