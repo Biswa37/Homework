@@ -5,8 +5,8 @@
 using namespace std;
 
 int main(int argc, char **argv){
-  string filename(argv[1]);
-  cout << " filename = " << filename << endl;
+  //string filename(argv[1]);
+  //cout << " filename = " << filename << endl;
 
   const int nparts_max = 250;
   int idhep[nparts_max];
