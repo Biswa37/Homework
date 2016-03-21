@@ -5,8 +5,10 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import pandas as pd
 import json
+import mpld3
 
-fig_size = (16, 9)
+#fig_size = (16, 9)
+fig_size = (4,3)
 fig = plt.figure(num=None, figsize=fig_size, dpi=200, facecolor='w', edgecolor='k')
 
 with open('acc.json') as data_file:    
@@ -51,3 +53,6 @@ plt.ylabel(r'Luminosity $\mathrm{log(cm^{-2} s^{-1})}$')
 plt.title('Livingston Plot for Luminosity')
 plt.legend(loc=4)
 plt.savefig("acc_LogLum.png")
+
+mpld3.show(fig)
+#mpld3.fig_to_html(fig)
