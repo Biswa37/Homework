@@ -13,7 +13,7 @@ for index, row in data.iterrows():
             event_end.append(index-1)
 
 num_of_events = np.hstack(data['event'][event_end])
-plt.hist(num_of_events,alpha=0.8,histtype='stepfilled')
+plt.hist(num_of_events,histtype='stepfilled',facecolor='g' , alpha=0.5)
 plt.ylabel('Frequency')
 plt.xlabel('Number of particles')
 plt.title("Number of particles per event")
@@ -21,7 +21,7 @@ plt.savefig('Number_of_particles.pdf')
 
 fig = plt.figure(figsize=(11,8.5))
 pions = data[np.abs(data.ID) == 211]
-ax = pions.Px.plot.hist(figsize=(11,8.5),bins=50,alpha=0.8,histtype='stepfilled')
+ax = pions.Px.plot.hist(figsize=(11,8.5),bins=50,histtype='stepfilled',facecolor='g' , alpha=0.5)
 ax.set_xlabel('Pion momentum in X direction')
 ax.set_title('Pion momentum in X direction')
 plt.savefig('Pion_px.pdf')
