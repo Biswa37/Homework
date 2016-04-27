@@ -21,14 +21,16 @@ df2 = df2[df2.Q2 == 1]
 frames = [df1, df2]
 
 df = pd.concat(frames)
-
-mass_z = 91#.1876
+df = df[df.Type1 == 'G']
+df = df[df.Type2 == 'G']
+mass_z = 91.1876
 
 def poly(x, c1, c2, c3, c4):
     return c1*x*x*x + c2*x*x + c3*x + c4
 
 def big_poly(x, c1, c2, c3, c4, c5, c6, c7, c8):
-    return c8*x**7 + c7*x**6 + c6*x**5 + c5*x**4 + c4*x**3 + c3*x**2 + c2*x + c1
+    #return c8*x**7 + c7*x**6 + c6*x**5 + c5*x**4 + c4*x**3 + c3*x**2 + c2*x + c1
+    return c5*x**4 + c4*x**3 + c3*x**2 + c2*x + c1
 
 def gaussian(x, mu, sig, const):
     return const * 1/(sig*np.sqrt(2*np.pi)) * np.exp(-(x - mu)**2 / 2*sig**2)
@@ -64,25 +66,19 @@ plt.hist(mass, num_bins, histtype=u'stepfilled',facecolor='g' , alpha=0.45)
 
 x0 = np.array([mass_z,0.04,1,popt_1[0],popt_1[1],popt_1[2],popt_1[3],popt_1[4],popt_1[5],popt_1[6],popt_1[7]])
 popt_1, pcov_1 = curve_fit(big_poly_gaus, xdata, ydata,p0=x0,maxfev = 200000)
-   
-signal = []
-for i in xrange(num_bins):
-    temp = ydata[i] - big_poly(xdata[i],*popt_1[3:])
-    if temp <= 0:
-        temp = 0
-    signal.append(temp)
 
 c2 = chi_2(big_poly_gaus(xdata, *popt_1),ydata)
 plt.plot(xdata,big_poly_gaus(xdata,*popt_1),'b--', lw=4,
-	label=r'$\mathrm{Poly\ bkg\ gaus\ peak\ : \ \chi^{2} = %.4f}$' %(c2))
+    label=r'$\mathrm{Poly\ bkg\ gaus\ peak\ : \ \chi^{2} = %.4f}$' %(c2))
 plt.plot(xdata,big_poly(xdata,*popt_1[3:]),'g--', lw=4)
 
 plt.ylim((0,np.max(ydata)))
 plt.xlim((np.min(xdata),np.max(xdata)))
 plt.xlabel(r'Mass (GeV)', fontsize=20)
 plt.ylabel(r'Counts (#)', fontsize=18)
-plt.legend(loc=0)
-plt.savefig('Mass_histogram.pdf')
+plt.legend(loc=1)
+plt.savefig('Mass_histogram.jpg')
+
 
 fig = plt.figure(num=None, figsize=(16,9), dpi=200, facecolor='w', edgecolor='k')
 popt_1, pcov_1 = curve_fit(big_poly_gaus, xdata, ydata,p0=x0,maxfev = 200000)
@@ -110,7 +106,8 @@ plt.xlim((np.min(xdata),np.max(xdata)))
 plt.xlabel(r'Mass (GeV)', fontsize=20)
 plt.ylabel(r'Counts (#)', fontsize=18)
 plt.legend(loc=0)
-plt.savefig('Z_peak.pdf')
+plt.savefig('Z_peak.jpg')
+
 
 Zs = df[df.M > (mean - 3.0*sigma)]
 Zs = Zs[Zs.M < (mean + 3.0*sigma)]
@@ -129,7 +126,8 @@ plt.hist2d(temp.ZE,temp.Zpt,bins=75,cmap='viridis',norm=LogNorm())
 plt.xlabel(r'Energy (GeV)', fontsize=20)
 plt.ylabel(r'Transverse Momentum (GeV)', fontsize=20)
 plt.colorbar()
-plt.savefig('Ze_Zpt_log.pdf')
+plt.savefig('Ze_Zpt_log.jpg')
+
 #########################################
 #########################################
 fig = plt.figure(num=None, figsize=(16,9), dpi=200, facecolor='w', edgecolor='k')
@@ -139,7 +137,8 @@ plt.hist2d(temp.ZE,temp.Zpt,bins=75,cmap='viridis')#,norm=LogNorm())
 plt.xlabel(r'Energy (GeV)', fontsize=20)
 plt.ylabel(r'Transverse Momentum (GeV)', fontsize=20)
 plt.colorbar()
-plt.savefig('Ze_Zpt.pdf')
+plt.savefig('Ze_Zpt.jpg')
+
 #########################################
 #########################################
 fig = plt.figure(num=None, figsize=(16,9), dpi=200, facecolor='w', edgecolor='k')
@@ -147,7 +146,9 @@ temp = Zs.drop(['Event','Run','Type1','Type2'],axis=1)
 temp = temp.drop(['E1','px1','py1','pz1','pt1','eta1','phi1','Q1'],axis=1)
 temp = temp.drop(['E2','px2','py2','pz2','pt2','eta2','phi2','Q2'],axis=1)
 scatter_matrix(temp, alpha=0.1, figsize=(20, 15),diagonal='kde')
-plt.savefig('scatter_matrix.pdf')
+#plt.savefig('scatter_matrix.jpg')
+plt.savefig('scatter_matrix.jpg')
+
 #########################################
 #########################################
 fig = plt.figure(num=None, figsize=(16,9), dpi=200, facecolor='w', edgecolor='k')
@@ -157,7 +158,19 @@ plt.hist2d(temp.ZE,temp.Zpz,bins=75,cmap='viridis',norm=LogNorm())
 plt.xlabel(r'Energy (GeV)', fontsize=20)
 plt.ylabel(r'Z Momentum (GeV)', fontsize=20)
 plt.colorbar()
-plt.savefig('ZE_Zpz.pdf')
+plt.savefig('ZE_Zpz.jpg')
+
+#########################################
+#########################################
+fig = plt.figure(num=None, figsize=(16,9), dpi=200, facecolor='w', edgecolor='k')
+temp = Zs[Zs.Zpz < 120]
+temp = temp[temp.ZE < 150]
+plt.hist2d(temp.Zpt,temp.Zpz,bins=75,cmap='viridis',norm=LogNorm())
+plt.xlabel(r'Transverse Momentum (GeV)', fontsize=20)
+plt.ylabel(r'Z Momentum (GeV)', fontsize=20)
+plt.colorbar()
+plt.savefig('Zpt_Zpz.jpg')
+
 #########################################
 #########################################
 fig = plt.figure(num=None, figsize=(16,9), dpi=200, facecolor='w', edgecolor='k')
@@ -166,7 +179,8 @@ plt.hist(temp.Zpz, 100, histtype=u'stepfilled',facecolor='b' , alpha=0.45)
 plt.ylabel(r'Counts (#)', fontsize=18)
 plt.xlabel(r'Z Momentum (GeV)', fontsize=20)
 #plt.colorbar()
-plt.savefig('Zpz.pdf')
+plt.savefig('Zpz.jpg')
+
 #########################################
 #########################################
 fig = plt.figure(num=None, figsize=(16,9), dpi=200, facecolor='w', edgecolor='k')
@@ -175,6 +189,6 @@ plt.hist(temp.Zpt, 100, histtype=u'stepfilled',facecolor='b' , alpha=0.45)
 plt.ylabel(r'Counts (#)', fontsize=18)
 plt.xlabel(r'Transverse Momentum (GeV)', fontsize=20)
 #plt.colorbar()
-plt.savefig('Zpt.pdf')
-#########################################
+plt.savefig('Zpt.jpg')
 
+#########################################
